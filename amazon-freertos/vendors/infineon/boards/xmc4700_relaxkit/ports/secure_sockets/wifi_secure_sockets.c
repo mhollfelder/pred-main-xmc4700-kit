@@ -66,8 +66,8 @@
 #include "iot_wifi.h"
 #include "iot_secure_sockets.h"
 
-#include "ISM43340_wifi.h"
-#include "ISM43340_wifi_conf.h"
+#include "ISM43x_wifi.h"
+#include "ISM43x_wifi_conf.h"
 
 /* WiFi configuration includes. */
 #include "aws_wifi_config.h"
@@ -150,7 +150,7 @@
  * serialize all the operations.
  */
 typedef struct WiFiModule {
-    ISM43340_WIFIObject_t xWifiObject;      /**< Internal WiFi object. */
+    ISM43x_WIFIObject_t xWifiObject;      /**< Internal WiFi object. */
     SemaphoreHandle_t xSemaphoreHandle;     /**< Semaphore used to serialize all the operations on the WiFi module. */
 } WiFiModule_t;
 
@@ -159,7 +159,7 @@ typedef struct WiFiModule {
  */
 typedef struct SecureSocket {
     uint8_t ucInUse;                    /**< Tracks whether the socket is in use or not. */
-    ISM43340_WIFI_ConnType_t xSocketType;     /**< Type of the socket. @see ISM43340_WIFI_ConnType_t. */
+    ISM43x_WIFI_ConnType_t xSocketType;     /**< Type of the socket. @see ISM43x_WIFI_ConnType_t. */
     uint32_t ulFlags;                   /**< Various properties of the socket (secured etc.). */
     uint32_t ulSendTimeout;             /**< Send timeout. */
     uint32_t ulReceiveTimeout;          /**< Receive timeout. */
@@ -341,7 +341,7 @@ static BaseType_t prvNetworkSend( void * pvContext,
     SecureSocket_t * pxSecureSocket;
     uint16_t usSentBytes = 0;
     BaseType_t xRetVal = SOCKETS_SOCKET_ERROR;
-    ISM43340_WIFI_Status_t xWiFiResult;
+    ISM43x_WIFI_Status_t xWiFiResult;
 
     /* Shortcut for easy access. */
     pxSecureSocket = &( xSockets[ ulSocketNumber ] );
@@ -365,12 +365,12 @@ static BaseType_t prvNetworkSend( void * pvContext,
             /* The maximum timeout for Inventek module is 30 seconds.
              * This timeout is about 65 seconds, so the module should
              * timeout before the SPI. */
-            //xWiFiModule.xWifiObject.Timeout = ISM43340_WIFI_TIMEOUT;
+            //xWiFiModule.xWifiObject.Timeout = ISM43x_WIFI_TIMEOUT;
         	xWiFiModule.xWifiObject.Timeout = pxSecureSocket->ulSendTimeout;
         }
 
         /* Send the data. */
-        xWiFiResult = ISM43340_WIFI_SendData( &( xWiFiModule.xWifiObject ),
+        xWiFiResult = ISM43x_WIFI_SendData( &( xWiFiModule.xWifiObject ),
                                         ( uint8_t ) ulSocketNumber,
                                         ( uint8_t * ) pucData,
                                         ( uint16_t ) xDataLength,
@@ -390,7 +390,7 @@ static BaseType_t prvNetworkSend( void * pvContext,
 			return xRetVal;
 		}
 
-        if( xWiFiResult == ISM43340_WIFI_STATUS_OK )
+        if( xWiFiResult == ISM43x_WIFI_STATUS_OK )
         {
             /* If the data was successfully sent, return the actual
              * number of bytes sent. Otherwise return SOCKETS_SOCKET_ERROR. */
@@ -403,7 +403,7 @@ static BaseType_t prvNetworkSend( void * pvContext,
 
     /* The following code attempts to revive the Inventek WiFi module
      * from its unusable state.*/
-    if( xWiFiResult == ISM43340_WIFI_STATUS_IO_ERROR )
+    if( xWiFiResult == ISM43x_WIFI_STATUS_IO_ERROR )
     {
         /* Reset the WiFi Module. Since the WIFI_Reset function
          * acquires the same semaphore, we must not acquire
@@ -447,17 +447,17 @@ static BaseType_t prvNetworkRecv( void * pvContext,
     SecureSocket_t * pxSecureSocket;
     uint16_t usReceivedBytes = 0;
     BaseType_t xRetVal;
-    ISM43340_WIFI_Status_t xWiFiResult;
+    ISM43x_WIFI_Status_t xWiFiResult;
     TickType_t xTimeOnEntering = xTaskGetTickCount(), xSemaphoreWait;
 
     /* Shortcut for easy access. */
     pxSecureSocket = &( xSockets[ ulSocketNumber ] );
 
-    /* WiFi module does not support receiving more than ISM43340_WIFI_PAYLOAD_SIZE
+    /* WiFi module does not support receiving more than ISM43x_WIFI_PAYLOAD_SIZE
      * bytes at a time. */
-    if( xReceiveBufferLength > ( uint32_t ) ISM43340_WIFI_PAYLOAD_SIZE )
+    if( xReceiveBufferLength > ( uint32_t ) ISM43x_WIFI_PAYLOAD_SIZE )
     {
-        xReceiveBufferLength = ( uint32_t ) ISM43340_WIFI_PAYLOAD_SIZE;
+        xReceiveBufferLength = ( uint32_t ) ISM43x_WIFI_PAYLOAD_SIZE;
     }
 
     xSemaphoreWait = pxSecureSocket->ulReceiveTimeout + securesocketsFIFTY_MILLISECONDS;
@@ -487,14 +487,14 @@ static BaseType_t prvNetworkRecv( void * pvContext,
                  * timeout before the SPI. */
 
                 /* Inventek has internal timeout protocol which should be supported */
-                //xWiFiModule.xWifiObject.Timeout = ISM43340_WIFI_TIMEOUT;
+                //xWiFiModule.xWifiObject.Timeout = ISM43x_WIFI_TIMEOUT;
 
                 /* IO ops to wait should be slightly bigger */
             	xWiFiModule.xWifiObject.Timeout = pxSecureSocket->ulReceiveTimeout + 3;
             }
 
             /* Receive the data. */
-            xWiFiResult = ISM43340_WIFI_ReceiveData( &( xWiFiModule.xWifiObject ),
+            xWiFiResult = ISM43x_WIFI_ReceiveData( &( xWiFiModule.xWifiObject ),
                                                ( uint8_t ) ulSocketNumber,
                                                ( uint8_t * ) pucReceiveBuffer,
                                                ( uint16_t ) xReceiveBufferLength,
@@ -516,13 +516,13 @@ static BaseType_t prvNetworkRecv( void * pvContext,
             /* Return the semaphore. */
             ( void ) xSemaphoreGive( xWiFiModule.xSemaphoreHandle );
 
-            if( ( xWiFiResult == ISM43340_WIFI_STATUS_OK ) && ( usReceivedBytes != 0 ) )
+            if( ( xWiFiResult == ISM43x_WIFI_STATUS_OK ) && ( usReceivedBytes != 0 ) )
             {
                 /* Success, return the number of bytes received. */
                 xRetVal = ( BaseType_t ) usReceivedBytes;
                 break;
             }
-            else if( ( xWiFiResult == ISM43340_WIFI_STATUS_TIMEOUT ) || ( ( xWiFiResult == ISM43340_WIFI_STATUS_OK ) && ( usReceivedBytes == 0 ) ) )
+            else if( ( xWiFiResult == ISM43x_WIFI_STATUS_TIMEOUT ) || ( ( xWiFiResult == ISM43x_WIFI_STATUS_OK ) && ( usReceivedBytes == 0 ) ) )
             {
                 /* The WiFi poll timed out, but has the socket timeout expired
                  * too? */
@@ -562,7 +562,7 @@ static BaseType_t prvNetworkRecv( void * pvContext,
 
     /* The following code attempts to revive the Inventek WiFi module
      * from its unusable state.*/
-    if( xWiFiResult == ISM43340_WIFI_STATUS_IO_ERROR )
+    if( xWiFiResult == ISM43x_WIFI_STATUS_IO_ERROR )
     {
 //        /* Reset the WiFi Module. Since the WIFI_Reset function
 //         * acquires the same semaphore, we must not acquire
@@ -608,7 +608,7 @@ Socket_t SOCKETS_Socket( int32_t lDomain,
     if( ulSocketNumber != ( uint32_t ) SOCKETS_INVALID_SOCKET )
     {
         /* Store the socket type. */
-        xSockets[ ulSocketNumber ].xSocketType = ISM43340_WIFI_TCP_CONNECTION;
+        xSockets[ ulSocketNumber ].xSocketType = ISM43x_WIFI_TCP_CONNECTION;
 
         /* Initialize all the members to sane values. */
         xSockets[ ulSocketNumber ].ulFlags = 0;
@@ -631,7 +631,7 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
 {
     uint32_t ulSocketNumber = ( uint32_t ) xSocket; /*lint !e923 cast required for portability. */
     SecureSocket_t * pxSecureSocket;
-    ISM43340_WIFI_Conn_t xWiFiConnection;
+    ISM43x_WIFI_Conn_t xWiFiConnection;
     int32_t lRetVal = SOCKETS_ERROR_NONE;
 
     #ifndef USE_OFFLOAD_SSL
@@ -663,11 +663,11 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
                     /* Store the custom certificate if needed. */
                     if( pxSecureSocket->pcServerCertificate != NULL )
                     {
-                        if( ISM43340_WIFI_StoreCA( &( xWiFiModule.xWifiObject ),
-                                             ISM43340_WIFI_FUNCTION_TLS,
+                        if( ISM43x_WIFI_StoreCA( &( xWiFiModule.xWifiObject ),
+                                             ISM43x_WIFI_FUNCTION_TLS,
                                              securesocketsOFFLOAD_SSL_CREDS_SLOT,
                                              ( uint8_t * ) pxSecureSocket->pcServerCertificate,
-                                             ( uint16_t ) pxSecureSocket->ulServerCertificateLength ) == ISM43340_WIFI_STATUS_OK )
+                                             ( uint16_t ) pxSecureSocket->ulServerCertificateLength ) == ISM43x_WIFI_STATUS_OK )
                         {
                             /* Certificate stored successfully. */
                             lRetVal = SOCKETS_ERROR_NONE;
@@ -685,11 +685,11 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
                         if( strstr( clientcredentialMQTT_BROKER_ENDPOINT, "-ats.iot" ) == NULL )
                         {
                             /* Store the default certificate. */
-                            if( ISM43340_WIFI_StoreCA( &( xWiFiModule.xWifiObject ),
-                                                 ISM43340_WIFI_FUNCTION_TLS,
+                            if( ISM43x_WIFI_StoreCA( &( xWiFiModule.xWifiObject ),
+                                                 ISM43x_WIFI_FUNCTION_TLS,
                                                  securesocketsOFFLOAD_SSL_CREDS_SLOT,
                                                  ( uint8_t * ) tlsVERISIGN_ROOT_CERTIFICATE_PEM,
-                                                 ( uint16_t ) tlsVERISIGN_ROOT_CERTIFICATE_LENGTH ) == ISM43340_WIFI_STATUS_OK )
+                                                 ( uint16_t ) tlsVERISIGN_ROOT_CERTIFICATE_LENGTH ) == ISM43x_WIFI_STATUS_OK )
                             {
                                 /* Certificate stored successfully. */
                                 lRetVal = SOCKETS_ERROR_NONE;
@@ -703,11 +703,11 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
                         else
                         {
                             /* Store the default certificate. */
-                            if( ISM43340_WIFI_StoreCA( &( xWiFiModule.xWifiObject ),
-                                                 ISM43340_WIFI_FUNCTION_TLS,
+                            if( ISM43x_WIFI_StoreCA( &( xWiFiModule.xWifiObject ),
+                                                 ISM43x_WIFI_FUNCTION_TLS,
                                                  securesocketsOFFLOAD_SSL_CREDS_SLOT,
                                                  ( uint8_t * ) tlsSTARFIELD_ROOT_CERTIFICATE_PEM,
-                                                 ( uint16_t ) tlsSTARFIELD_ROOT_CERTIFICATE_LENGTH ) == ISM43340_WIFI_STATUS_OK )
+                                                 ( uint16_t ) tlsSTARFIELD_ROOT_CERTIFICATE_LENGTH ) == ISM43x_WIFI_STATUS_OK )
                             {
                                 /* Certificate stored successfully. */
                                 lRetVal = SOCKETS_ERROR_NONE;
@@ -735,7 +735,7 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
                 xWiFiConnection.Name = NULL;
 
                 /* Start the client connection. */
-                if( ISM43340_WIFI_StartClientConnection( &( xWiFiModule.xWifiObject ), &( xWiFiConnection ) ) == ISM43340_WIFI_STATUS_OK )
+                if( ISM43x_WIFI_StartClientConnection( &( xWiFiModule.xWifiObject ), &( xWiFiConnection ) ) == ISM43x_WIFI_STATUS_OK )
                 {
                     /* Successful connection is established. */
                     lRetVal = SOCKETS_ERROR_NONE;
@@ -976,7 +976,7 @@ int32_t SOCKETS_Close( Socket_t xSocket )
 {
     uint32_t ulSocketNumber = ( uint32_t ) xSocket; /*lint !e923 cast required for portability. */
     SecureSocket_t * pxSecureSocket;
-    ISM43340_WIFI_Conn_t xWiFiConnection;
+    ISM43x_WIFI_Conn_t xWiFiConnection;
     int32_t lRetVal;
 
     /* Ensure that a valid socket was passed. */
@@ -1009,15 +1009,15 @@ int32_t SOCKETS_Close( Socket_t xSocket )
             }
         #endif /* USE_OFFLOAD_SSL */
 
-        /* Initialize the members used by the ISM43340_WIFI_StopClientConnection call. */
+        /* Initialize the members used by the ISM43x_WIFI_StopClientConnection call. */
         xWiFiConnection.Number = ( uint8_t ) ulSocketNumber;
 
         /* Try to acquire the semaphore. */
         if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
         {
             /* Stop the client connection. */
-            if( ISM43340_WIFI_StopClientConnection( &( xWiFiModule.xWifiObject ), &( xWiFiConnection ) )
-                == ISM43340_WIFI_STATUS_OK )
+            if( ISM43x_WIFI_StopClientConnection( &( xWiFiModule.xWifiObject ), &( xWiFiConnection ) )
+                == ISM43x_WIFI_STATUS_OK )
             {
                 /* Connection close successful. */
                 lRetVal = SOCKETS_ERROR_NONE;
@@ -1130,7 +1130,7 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
 
                     #ifdef USE_OFFLOAD_SSL
                         /* Set the socket type to SSL to use offload SSL. */
-                        pxSecureSocket->xSocketType = ISM43340_WIFI_TCP_SSL_CONNECTION;
+                        pxSecureSocket->xSocketType = ISM43x_WIFI_TCP_SSL_CONNECTION;
                     #endif /* USE_OFFLOAD_SSL */
                 }
                 else
@@ -1216,7 +1216,7 @@ uint32_t SOCKETS_GetHostByName( const char * pcHostName )
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Do a DNS Lookup. */
-        if( ISM43340_WIFI_DNS_LookUp( &( xWiFiModule.xWifiObject ), pcHostName, ( uint8_t * ) &( ulIPAddres ) ) != ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_DNS_LookUp( &( xWiFiModule.xWifiObject ), pcHostName, ( uint8_t * ) &( ulIPAddres ) ) != ISM43x_WIFI_STATUS_OK )
         {
             /* Return 0 if the DNS lookup fails. */
             ulIPAddres = 0;

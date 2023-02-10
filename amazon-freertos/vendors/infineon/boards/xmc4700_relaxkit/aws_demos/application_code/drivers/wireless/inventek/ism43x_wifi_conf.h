@@ -21,34 +21,34 @@
  *
  */
 
-#ifndef ISM43340_WIFI_CONF_H
-#define ISM43340_WIFI_CONF_H
+#ifndef ISM43x_WIFI_CONF_H
+#define ISM43x_WIFI_CONF_H
 
 
-#define ISM43340_WIFI_MAX_SSID_NAME_SIZE      		( 32 )
-#define ISM43340_WIFI_MAX_PSWD_NAME_SIZE      		( 32 )
-#define ISM43340_WIFI_PRODUCT_ID_SIZE         		( 32 )
-#define ISM43340_WIFI_PRODUCT_NAME_SIZE       		( 32 )
-#define ISM43340_WIFI_FW_REV_SIZE             		( 16 )
-#define ISM43340_WIFI_API_REV_SIZE            		( 16 )
-#define ISM43340_WIFI_STACK_REV_SIZE          		( 16 )
-#define ISM43340_WIFI_RTOS_REV_SIZE           		( 16 )
+#define ISM43x_WIFI_MAX_SSID_NAME_SIZE      		( 32 )
+#define ISM43x_WIFI_MAX_PSWD_NAME_SIZE      		( 32 )
+#define ISM43x_WIFI_PRODUCT_ID_SIZE         		( 32 )
+#define ISM43x_WIFI_PRODUCT_NAME_SIZE       		( 32 )
+#define ISM43x_WIFI_FW_REV_SIZE             		( 16 )
+#define ISM43x_WIFI_API_REV_SIZE            		( 16 )
+#define ISM43x_WIFI_STACK_REV_SIZE          		( 16 )
+#define ISM43x_WIFI_RTOS_REV_SIZE           		( 16 )
 
-#ifndef ISM43340_WIFI_DATA_SIZE
-#define ISM43340_WIFI_DATA_SIZE               		( 1400 )
+#ifndef ISM43x_WIFI_DATA_SIZE
+#define ISM43x_WIFI_DATA_SIZE               		( 1400 )
 #endif
 
-#ifndef ISM43340_WIFI_MAX_DETECTED_AP
-#define ISM43340_WIFI_MAX_DETECTED_AP         		( 10 )
+#ifndef ISM43x_WIFI_MAX_DETECTED_AP
+#define ISM43x_WIFI_MAX_DETECTED_AP         		( 10 )
 #endif
 
-#ifndef ISM43340_WIFI_TIMEOUT
-#define ISM43340_WIFI_TIMEOUT                 		( 0xFFFF )
+#ifndef ISM43x_WIFI_TIMEOUT
+#define ISM43x_WIFI_TIMEOUT                 		( 0xFFFF )
 #endif
 
-#ifndef ISM43340_WIFI_PAYLOAD_SIZE
-#define ISM43340_WIFI_PAYLOAD_SIZE            		( 1200 )
+#ifndef ISM43x_WIFI_PAYLOAD_SIZE
+#define ISM43x_WIFI_PAYLOAD_SIZE            		( 1200 )
 #endif
 
 
-#endif /* ISM43340_WIFI_CONF_H */
+#endif /* ISM43x_WIFI_CONF_H */

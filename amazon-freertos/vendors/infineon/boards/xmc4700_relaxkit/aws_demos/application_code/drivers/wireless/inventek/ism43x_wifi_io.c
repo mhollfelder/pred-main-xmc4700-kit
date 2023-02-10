@@ -29,9 +29,9 @@
 #include "queue.h"
 #include "timers.h"
 
-#include "ism43340_wifi.h"
-#include "ism43340_wifi_io.h"
-#include "ism43340_wifi_conf.h"
+#include "ISM43x_wifi.h"
+#include "ISM43x_wifi_io.h"
+#include "ISM43x_wifi_conf.h"
 
 #include "spi_mux.h"
 
@@ -43,7 +43,7 @@
 SemaphoreHandle_t xEsWifiMutex;
 
 /* Data to send */
-static uint8_t pucBufTx[ISM43340_WIFI_DATA_SIZE] = { 0 };
+static uint8_t pucBufTx[ISM43x_WIFI_DATA_SIZE] = { 0 };
 static bool prvbIsRdyFallen = false;
 
 static uint32_t prvWifiIsCmdDataRdy( void );
@@ -56,7 +56,7 @@ int8_t SPI_WIFI_cInit( uint16_t ucWifiMode )
 {
     int8_t cRet = 0;
 
-    if( ucWifiMode == ISM43340_WIFI_INIT )
+    if( ucWifiMode == ISM43x_WIFI_INIT )
     {
         if( xEsWifiMutex == NULL )
         {
@@ -110,7 +110,7 @@ int8_t SPI_WIFI_cResetModule( void )
         {
             SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
             configPRINTF( ( "WIFI RDY line is not going to HIGH state. Initialization error! \r\n" ) );
-            return ISM43340_WIFI_ERROR_WAITING_DRDY_RISING;
+            return ISM43x_WIFI_ERROR_WAITING_DRDY_RISING;
         }
 
         prvbIsRdyFallen = false;
@@ -122,7 +122,7 @@ int8_t SPI_WIFI_cResetModule( void )
                 {
                     SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
                     configPRINTF( ( "WIFI Module initialization error! \r\n" ) );
-                    return ISM43340_WIFI_ERROR_SPI_INIT;
+                    return ISM43x_WIFI_ERROR_SPI_INIT;
                 }
 
                 /* loop until MSLS is low; this means that data is not available */
@@ -150,7 +150,7 @@ int8_t SPI_WIFI_cResetModule( void )
         {
             SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
             configPRINTF( ( "RDY line is not going to LOW state. WIFI Module initialization error! \r\n" ) );
-            return ISM43340_WIFI_ERROR_WAITING_DRDY_FALLING;
+            return ISM43x_WIFI_ERROR_WAITING_DRDY_FALLING;
         }
 
         SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
@@ -159,7 +159,7 @@ int8_t SPI_WIFI_cResetModule( void )
     if( !bResult )
     {
         configPRINTF( ( "WIFI Module initialization error! \r\n" ) );
-        return ISM43340_WIFI_ERROR_SPI_INIT;
+        return ISM43x_WIFI_ERROR_SPI_INIT;
     }
 
     configPRINTF( ("WIFI Module is ready. \r\n") );
@@ -189,7 +189,7 @@ int16_t SPI_WIFI_sReceiveData(uint8_t *pData, uint16_t usReceiveLength, uint32_t
 
     if( prvWaitCmdDataRdyHigh( 10000 + ulTimeout ) < 0)
     {
-        return ISM43340_WIFI_ERROR_WAITING_DRDY_RISING;
+        return ISM43x_WIFI_ERROR_WAITING_DRDY_RISING;
     }
 
     if ( SPI_MUX_bAcquire( SPI_MUX_TYPE_WIFI, SPI_ACQUIRE_TIMEOUT ) )
@@ -201,7 +201,7 @@ int16_t SPI_WIFI_sReceiveData(uint8_t *pData, uint16_t usReceiveLength, uint32_t
                 if( SPI_MASTER_Transfer( &SPI_MASTER_0, ucDummySend, pucRx, 2 ) != SPI_MASTER_STATUS_SUCCESS )
                 {
                     SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
-                    return ISM43340_WIFI_ERROR_SPI_FAILED;
+                    return ISM43x_WIFI_ERROR_SPI_FAILED;
                 }
 
                 /* loop until MSLS is low; this means that data is not available */
@@ -232,10 +232,10 @@ int16_t SPI_WIFI_sReceiveData(uint8_t *pData, uint16_t usReceiveLength, uint32_t
                 sLength += 2;
                 pData  += 2;
 
-                if( sLength >= ISM43340_WIFI_DATA_SIZE * 10 )
+                if( sLength >= ISM43x_WIFI_DATA_SIZE * 10 )
                 {
                     SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
-                    return ISM43340_WIFI_ERROR_STUFFING_FOREVER;
+                    return ISM43x_WIFI_ERROR_STUFFING_FOREVER;
                 }
             }
             else
@@ -247,7 +247,7 @@ int16_t SPI_WIFI_sReceiveData(uint8_t *pData, uint16_t usReceiveLength, uint32_t
     }
     else
     {
-        return ISM43340_WIFI_ERROR_SPI_FAILED;
+        return ISM43x_WIFI_ERROR_SPI_FAILED;
     }
 
     return sLength;
@@ -257,7 +257,7 @@ int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint
 {
     if( prvWaitCmdDataRdyHigh( 10000 ) < 0)
     {
-        return ISM43340_WIFI_ERROR_WAITING_DRDY_RISING;
+        return ISM43x_WIFI_ERROR_WAITING_DRDY_RISING;
     }
 
     if( SPI_MUX_bAcquire( SPI_MUX_TYPE_WIFI, SPI_ACQUIRE_TIMEOUT ) )
@@ -266,7 +266,7 @@ int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint
 
 #if releaseHARDWARE_VERSION_MINOR > 2
 
-        /* Prepending by '\n' according to "ISM43340_4343_SPI_Errata_C6.2.1.X" */
+        /* Prepending by '\n' according to "ISM43x_4343_SPI_Errata_C6.2.1.X" */
         for( int16_t i = usTransmitLength - 1; i >= 0; i-- )
         {
             pucBufTx[i+1] = pData[i];
@@ -295,7 +295,7 @@ int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint
         if( SPI_MASTER_Transmit( &SPI_MASTER_0, pucBufTx, usTransmitLength ) != SPI_MASTER_STATUS_SUCCESS )
         {
             SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
-            return ISM43340_WIFI_ERROR_SPI_FAILED;
+            return ISM43x_WIFI_ERROR_SPI_FAILED;
         }
 
         /* loop until MSLS is low; this means that data is not available */
@@ -309,7 +309,7 @@ int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint
             if( ( xTaskGetTickCount() - ulTickStart ) > 10000 )
             {
                 SPI_MUX_bRelease( SPI_MUX_TYPE_WIFI );
-                return ISM43340_WIFI_ERROR_WAITING_DRDY_FALLING;
+                return ISM43x_WIFI_ERROR_WAITING_DRDY_FALLING;
             }
         }
     }
@@ -319,7 +319,7 @@ int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint
 
 uint32_t prvWifiIsCmdDataRdy( void )
 {
-    return PIN_INTERRUPT_GetPinValue( &ISM43340_RDY_PIN_INTERRUPT );
+    return PIN_INTERRUPT_GetPinValue( &ISM43x_RDY_PIN_INTERRUPT );
 }
 
 
@@ -377,8 +377,8 @@ int8_t prvWaitCmdDataRdyFalling( uint32_t ulTimeout )
 }
 
 
-/* ISM43340 Ready pin Falling Interrupt */
-void ISM43340_RDY_IRQHandler( void )
+/* ISM43x Ready pin Falling Interrupt */
+void ISM43x_RDY_IRQHandler( void )
 {
     prvbIsRdyFallen = true;
 }

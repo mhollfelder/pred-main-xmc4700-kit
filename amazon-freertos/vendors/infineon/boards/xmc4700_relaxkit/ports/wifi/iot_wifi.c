@@ -1,5 +1,5 @@
 /*
- * FreeRTOS Wi-Fi ISM43340 V1.0
+ * FreeRTOS Wi-Fi ISM43x V1.0
  * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -55,8 +55,8 @@
 #include "semphr.h"
 
 /* Wi-Fi driver includes. */
-#include "ISM43340_wifi.h"
-#include "ISM43340_wifi_io.h"
+#include "ISM43x_wifi.h"
+#include "ISM43x_wifi_io.h"
 
 /* Socket and Wi-Fi interface includes. */
 #include "iot_wifi.h"
@@ -76,7 +76,7 @@
  */
 typedef struct WiFiModule
 {
-    ISM43340_WIFIObject_t xWifiObject;        /**< Internal Wi-Fi object. */
+    ISM43x_WIFIObject_t xWifiObject;        /**< Internal Wi-Fi object. */
     SemaphoreHandle_t xSemaphoreHandle; /**< Semaphore used to serialize all the operations on the Wi-Fi module. */
 } WiFiModule_t;
 
@@ -95,36 +95,36 @@ static BaseType_t xWIFIInitDone;
 static const TickType_t xSemaphoreWaitTicks = pdMS_TO_TICKS( wificonfigMAX_SEMAPHORE_WAIT_TIME_MS );
 
 /**
- * @brief Maps the given abstracted security type to ISM43340 specific one.
+ * @brief Maps the given abstracted security type to ISM43x specific one.
  *
  * @param[in] xSecurity The given abstracted security type.
  *
- * @return Corresponding ISM43340 specific security type.
+ * @return Corresponding ISM43x specific security type.
  */
-static ISM43340_WIFI_SecurityType_t prvConvertSecurityFromAbstractedToISM43340( WIFISecurity_t xSecurity )
+static ISM43x_WIFI_SecurityType_t prvConvertSecurityFromAbstractedToISM43x( WIFISecurity_t xSecurity )
 {
-    ISM43340_WIFI_SecurityType_t xConvertedSecurityType = ISM43340_WIFI_SEC_UNKNOWN;
+    ISM43x_WIFI_SecurityType_t xConvertedSecurityType = ISM43x_WIFI_SEC_UNKNOWN;
 
     switch( xSecurity )
     {
         case eWiFiSecurityOpen:
-            xConvertedSecurityType = ISM43340_WIFI_SEC_OPEN;
+            xConvertedSecurityType = ISM43x_WIFI_SEC_OPEN;
             break;
 
         case eWiFiSecurityWEP:
-            xConvertedSecurityType = ISM43340_WIFI_SEC_WEP;
+            xConvertedSecurityType = ISM43x_WIFI_SEC_WEP;
             break;
 
         case eWiFiSecurityWPA:
-            xConvertedSecurityType = ISM43340_WIFI_SEC_WPA;
+            xConvertedSecurityType = ISM43x_WIFI_SEC_WPA;
             break;
 
         case eWiFiSecurityWPA2:
-            xConvertedSecurityType = ISM43340_WIFI_SEC_WPA2;
+            xConvertedSecurityType = ISM43x_WIFI_SEC_WPA2;
             break;
 
         case eWiFiSecurityNotSupported:
-            xConvertedSecurityType = ISM43340_WIFI_SEC_UNKNOWN;
+            xConvertedSecurityType = ISM43x_WIFI_SEC_UNKNOWN;
             break;
     }
 
@@ -134,31 +134,31 @@ static ISM43340_WIFI_SecurityType_t prvConvertSecurityFromAbstractedToISM43340( 
 /*-----------------------------------------------------------*/
 
 /**
- * @brief Maps the ISM43340 security type to abstracted security type.
+ * @brief Maps the ISM43x security type to abstracted security type.
  *
- * @param[in] xSecurity The ISM43340 security type.
+ * @param[in] xSecurity The ISM43x security type.
  *
  * @return Corresponding abstracted security type.
  */
-static WIFISecurity_t prvConvertSecurityToAbstracted( ISM43340_WIFI_SecurityType_t xSecurity )
+static WIFISecurity_t prvConvertSecurityToAbstracted( ISM43x_WIFI_SecurityType_t xSecurity )
 {
     WIFISecurity_t xConvertedSecurityType = eWiFiSecurityNotSupported;
 
     switch( xSecurity )
     {
-        case ISM43340_WIFI_SEC_OPEN:
+        case ISM43x_WIFI_SEC_OPEN:
             xConvertedSecurityType = eWiFiSecurityOpen;
             break;
 
-        case ISM43340_WIFI_SEC_WEP:
+        case ISM43x_WIFI_SEC_WEP:
             xConvertedSecurityType = eWiFiSecurityWEP;
             break;
 
-        case ISM43340_WIFI_SEC_WPA:
+        case ISM43x_WIFI_SEC_WPA:
             xConvertedSecurityType = eWiFiSecurityWPA;
             break;
 
-        case ISM43340_WIFI_SEC_WPA2:
+        case ISM43x_WIFI_SEC_WPA2:
             xConvertedSecurityType = eWiFiSecurityWPA2;
             break;
 
@@ -175,7 +175,7 @@ static WIFISecurity_t prvConvertSecurityToAbstracted( ISM43340_WIFI_SecurityType
 WIFIReturnCode_t WIFI_On( void )
 {
     WIFIReturnCode_t xRetVal = eWiFiFailure;
-    ISM43340_WIFI_Status_t xWiFiStatus = ISM43340_WIFI_STATUS_ERROR;
+    ISM43x_WIFI_Status_t xWiFiStatus = ISM43x_WIFI_STATUS_ERROR;
 
     /* One time Wi-Fi initialization */
     if( xWIFIInitDone == pdFALSE )
@@ -198,16 +198,16 @@ WIFIReturnCode_t WIFI_On( void )
     }
 
     /* Register function pointers for carrying out SPI operations. */
-    if( ISM43340_WIFI_RegisterBusIO( &( xWiFiModule.xWifiObject ),
+    if( ISM43x_WIFI_RegisterBusIO( &( xWiFiModule.xWifiObject ),
                                &( SPI_WIFI_cInit ),
                                &( SPI_WIFI_cDeInit ),
                                &( SPI_WIFI_vDelay ),
                                &( SPI_WIFI_sTransmitData ),
-                               &( SPI_WIFI_sReceiveData ) ) == ISM43340_WIFI_STATUS_OK )
+                               &( SPI_WIFI_sReceiveData ) ) == ISM43x_WIFI_STATUS_OK )
     {
         /* Initialize the Wi-Fi module. */
-    	xWiFiStatus =  ISM43340_WIFI_Init( &( xWiFiModule.xWifiObject ) );
-        if( xWiFiStatus == ISM43340_WIFI_STATUS_OK )
+    	xWiFiStatus =  ISM43x_WIFI_Init( &( xWiFiModule.xWifiObject ) );
+        if( xWiFiStatus == ISM43x_WIFI_STATUS_OK )
         {
             /* Initialization successful. */
             xRetVal = eWiFiSuccess;
@@ -244,7 +244,7 @@ WIFIReturnCode_t WIFI_Off( void )
         xWiFiModule.xSemaphoreHandle = NULL;
 
         /* DeInitialize the Wi-Fi module. */
-        if( ISM43340_WIFI_DeInit( &( xWiFiModule.xWifiObject ) ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_DeInit( &( xWiFiModule.xWifiObject ) ) == ISM43x_WIFI_STATUS_OK )
         {
             /* Initialization successful. */
             xRetVal = eWiFiSuccess;
@@ -272,9 +272,9 @@ WIFIReturnCode_t WIFI_ConnectAP( const WIFINetworkParams_t * const pxNetworkPara
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Disconnect first if we are connected, to connect to the input network. */
-        if( ISM43340_WIFI_IsConnected( &xWiFiModule.xWifiObject ) )
+        if( ISM43x_WIFI_IsConnected( &xWiFiModule.xWifiObject ) )
         {
-            if( ISM43340_WIFI_Disconnect( &( xWiFiModule.xWifiObject ) ) ==  ISM43340_WIFI_STATUS_OK )
+            if( ISM43x_WIFI_Disconnect( &( xWiFiModule.xWifiObject ) ) ==  ISM43x_WIFI_STATUS_OK )
             {
                 xRetVal = eWiFiSuccess;
             }
@@ -293,13 +293,13 @@ WIFIReturnCode_t WIFI_ConnectAP( const WIFINetworkParams_t * const pxNetworkPara
             for( x = 0 ; x < wificonfigNUM_CONNECTION_RETRY ; x++ )
             {
                 /* Try to connect to Wi-Fi. */
-                if( ISM43340_WIFI_Connect( &( xWiFiModule.xWifiObject ),
+                if( ISM43x_WIFI_Connect( &( xWiFiModule.xWifiObject ),
                                         pxNetworkParams->pcSSID,
                                         pxNetworkParams->pcPassword,
-                                        prvConvertSecurityFromAbstractedToISM43340( pxNetworkParams->xSecurity ) ) == ISM43340_WIFI_STATUS_OK )
+                                        prvConvertSecurityFromAbstractedToISM43x( pxNetworkParams->xSecurity ) ) == ISM43x_WIFI_STATUS_OK )
                 {
                     /* Store network settings. */
-                    if( ISM43340_WIFI_GetNetworkSettings( &( xWiFiModule.xWifiObject ) ) == ISM43340_WIFI_STATUS_OK )
+                    if( ISM43x_WIFI_GetNetworkSettings( &( xWiFiModule.xWifiObject ) ) == ISM43x_WIFI_STATUS_OK )
                     {
                         /* Connection successful. */
                         xRetVal = eWiFiSuccess;
@@ -331,13 +331,13 @@ WIFIReturnCode_t WIFI_Disconnect( void )
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
-        if( ISM43340_WIFI_Disconnect( &( xWiFiModule.xWifiObject ) ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_Disconnect( &( xWiFiModule.xWifiObject ) ) == ISM43x_WIFI_STATUS_OK )
         {
             /* This variable is not updated by the driver after a disconnect. */
         	xWiFiModule.xWifiObject.NetSettings.IsConnected = 0;
 
             /* Store network settings. After a disconnect the IP address under NetSettings becomes 0.0.0.0 */
-            if( ISM43340_WIFI_GetNetworkSettings( &( xWiFiModule.xWifiObject ) ) == ISM43340_WIFI_STATUS_OK )
+            if( ISM43x_WIFI_GetNetworkSettings( &( xWiFiModule.xWifiObject ) ) == ISM43x_WIFI_STATUS_OK )
             {
                 /* Disconnection successful. */
                 xRetVal = eWiFiSuccess;
@@ -365,7 +365,7 @@ WIFIReturnCode_t WIFI_Reset( void )
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Reset command gives error so hard resetting */
-        ISM43340_WIFI_Init( &( xWiFiModule.xWifiObject ) );
+        ISM43x_WIFI_Init( &( xWiFiModule.xWifiObject ) );
         xRetVal = eWiFiSuccess;
 
         /* Return the semaphore. */
@@ -443,7 +443,7 @@ WIFIReturnCode_t WIFI_Ping( uint8_t * pucIPAddr,
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
-        if( ISM43340_WIFI_Ping( &xWiFiModule.xWifiObject, pucIPAddr, usCount, ulIntervalMS ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_Ping( &xWiFiModule.xWifiObject, pucIPAddr, usCount, ulIntervalMS ) == ISM43x_WIFI_STATUS_OK )
         {
             xRetVal = eWiFiSuccess;
         }
@@ -498,7 +498,7 @@ WIFIReturnCode_t WIFI_GetMAC( uint8_t * pucMac )
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
-        if( ISM43340_WIFI_GetMACAddress( &xWiFiModule.xWifiObject, pucMac ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_GetMACAddress( &xWiFiModule.xWifiObject, pucMac ) == ISM43x_WIFI_STATUS_OK )
         {
             xRetVal = eWiFiSuccess;
         }
@@ -527,7 +527,7 @@ WIFIReturnCode_t WIFI_GetHostIP( char * pcHost,
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
-        if( ISM43340_WIFI_DNS_LookUp( &xWiFiModule.xWifiObject, pcHost, pucIPAddr ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_DNS_LookUp( &xWiFiModule.xWifiObject, pcHost, pucIPAddr ) == ISM43x_WIFI_STATUS_OK )
         {
             xRetVal = eWiFiSuccess;
         }
@@ -546,21 +546,21 @@ WIFIReturnCode_t WIFI_GetHostIP( char * pcHost,
 /*-----------------------------------------------------------*/
 
 /*Scan fails if the command buffer is too small to fit in scan result and it returns
- * IO error, see ISM43340_wifi_conf.h*/
+ * IO error, see ISM43x_wifi_conf.h*/
 WIFIReturnCode_t WIFI_Scan( WIFIScanResult_t * pxBuffer,
                             uint8_t ucNumNetworks )
 {
     WIFIReturnCode_t xRetVal = eWiFiFailure;
     uint32_t x;
 
-    ISM43340_WIFI_APs_t xESWifiAPs;
+    ISM43x_WIFI_APs_t xESWifiAPs;
 
     configASSERT( pxBuffer != NULL );
 
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
-        if( ISM43340_WIFI_ListAccessPoints( &xWiFiModule.xWifiObject, &xESWifiAPs ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_ListAccessPoints( &xWiFiModule.xWifiObject, &xESWifiAPs ) == ISM43x_WIFI_STATUS_OK )
         {
             for( x = 0 ; x < ucNumNetworks ; x++ )
             {
@@ -614,14 +614,14 @@ WIFIReturnCode_t WIFI_StopAP( void )
 WIFIReturnCode_t WIFI_ConfigureAP( const WIFINetworkParams_t * const pxNetworkParams )
 {
     WIFIReturnCode_t xRetVal = eWiFiFailure;
-    ISM43340_WIFI_APConfig_t xApConfig;
+    ISM43x_WIFI_APConfig_t xApConfig;
 
     configASSERT( pxNetworkParams != NULL );
     configASSERT( pxNetworkParams->pcSSID != NULL );
 
     strncpy( ( char * ) xApConfig.SSID,
              ( char * ) pxNetworkParams->pcSSID,
-             ISM43340_WIFI_MAX_SSID_NAME_SIZE );
+             ISM43x_WIFI_MAX_SSID_NAME_SIZE );
 
     if ( pxNetworkParams->xSecurity != eWiFiSecurityOpen )
     {
@@ -629,18 +629,18 @@ WIFIReturnCode_t WIFI_ConfigureAP( const WIFINetworkParams_t * const pxNetworkPa
 
         strncpy( ( char * ) xApConfig.Pass,
                  ( char * ) pxNetworkParams->pcPassword,
-                 ISM43340_WIFI_MAX_PSWD_NAME_SIZE );
+                 ISM43x_WIFI_MAX_PSWD_NAME_SIZE );
     }
 
     xApConfig.Channel = pxNetworkParams->cChannel;
     xApConfig.MaxConnections = wificonfigMAX_CONNECTED_STATIONS;
-    xApConfig.Security = prvConvertSecurityFromAbstractedToISM43340( pxNetworkParams->xSecurity );
+    xApConfig.Security = prvConvertSecurityFromAbstractedToISM43x( pxNetworkParams->xSecurity );
 
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Activate Soft AP. */
-        if( ISM43340_WIFI_ActivateAP( &xWiFiModule.xWifiObject, &xApConfig ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_ActivateAP( &xWiFiModule.xWifiObject, &xApConfig ) == ISM43x_WIFI_STATUS_OK )
         {
             xRetVal = eWiFiSuccess;
         }
@@ -678,13 +678,13 @@ WIFIReturnCode_t WIFI_GetPMMode( WIFIPMMode_t * pxPMModeType,
 BaseType_t WIFI_GetRssi( void )
 {
     int32_t rssi = 0;
-    /* Expected result from ISM43340_WIFI_IsConnected() when the board is connected to Wi-Fi. */
+    /* Expected result from ISM43x_WIFI_IsConnected() when the board is connected to Wi-Fi. */
 
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Check whether or not the WiFi module is connected to any AP. */
-        rssi = ISM43340_WIFI_GetRssi( &xWiFiModule.xWifiObject );
+        rssi = ISM43x_WIFI_GetRssi( &xWiFiModule.xWifiObject );
 
         /* Return the semaphore. */
         xSemaphoreGive( xWiFiModule.xSemaphoreHandle );
@@ -697,14 +697,14 @@ BaseType_t WIFI_GetRssi( void )
 BaseType_t WIFI_IsConnected( void )
 {
     BaseType_t xIsConnected = pdFALSE;
-    /* Expected result from ISM43340_WIFI_IsConnected() when the board is connected to Wi-Fi. */
+    /* Expected result from ISM43x_WIFI_IsConnected() when the board is connected to Wi-Fi. */
     const uint8_t uConnected = 1;
 
     /* Try to acquire the semaphore. */
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Check whether or not the WiFi module is connected to any AP. */
-        if ( ISM43340_WIFI_IsConnected( &xWiFiModule.xWifiObject ) == uConnected )
+        if ( ISM43x_WIFI_IsConnected( &xWiFiModule.xWifiObject ) == uConnected )
         {
             xIsConnected = pdTRUE;
         }
@@ -738,11 +738,11 @@ BaseType_t WIFI_IsConnected( void )
         if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
         {
             /* Store Certificate. */
-            if( ISM43340_WIFI_StoreCertificate( &xWiFiModule.xWifiObject,
-                                          ISM43340_WIFI_FUNCTION_TLS,
+            if( ISM43x_WIFI_StoreCertificate( &xWiFiModule.xWifiObject,
+                                          ISM43x_WIFI_FUNCTION_TLS,
                                           wifiOFFLOAD_SSL_CREDS_SLOT,
                                           pucCertificate,
-                                          usCertificateLength ) == ISM43340_WIFI_STATUS_OK )
+                                          usCertificateLength ) == ISM43x_WIFI_STATUS_OK )
             {
                 xRetVal = eWiFiSuccess;
             }
@@ -782,11 +782,11 @@ BaseType_t WIFI_IsConnected( void )
         if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
         {
             /* Store Certificate. */
-            if( ISM43340_WIFI_StoreKey( &xWiFiModule.xWifiObject,
-                                  ISM43340_WIFI_FUNCTION_TLS,
+            if( ISM43x_WIFI_StoreKey( &xWiFiModule.xWifiObject,
+                                  ISM43x_WIFI_FUNCTION_TLS,
                                   wifiOFFLOAD_SSL_CREDS_SLOT,
                                   pucKey,
-                                  usKeyLength ) == ISM43340_WIFI_STATUS_OK )
+                                  usKeyLength ) == ISM43x_WIFI_STATUS_OK )
             {
                 xRetVal = eWiFiSuccess;
             }
@@ -822,7 +822,7 @@ WIFIReturnCode_t WIFI_GetFirmwareVersion( uint8_t * pucBuffer )
     if( xSemaphoreTake( xWiFiModule.xSemaphoreHandle, xSemaphoreWaitTicks ) == pdTRUE )
     {
         /* Get the firmware version. */
-        if( ISM43340_WIFI_GetFWRevID( &xWiFiModule.xWifiObject, pucBuffer ) == ISM43340_WIFI_STATUS_OK )
+        if( ISM43x_WIFI_GetFWRevID( &xWiFiModule.xWifiObject, pucBuffer ) == ISM43x_WIFI_STATUS_OK )
         {
             xRetVal = eWiFiSuccess;
         }

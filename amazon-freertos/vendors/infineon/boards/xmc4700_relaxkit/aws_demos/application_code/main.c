@@ -83,7 +83,7 @@
 #include "optiga/pal/pal_os_event.h"
 #include "optiga/include/optiga/pal/pal_logger.h"
 #include "modem/aws_nbiot.h"
-#include "ism43340_wifi_io.h"
+#include "ISM43x_wifi_io.h"
 #include "get_optiga_certificate.h"
 
 /* Hardware Peripherals headers includes */
