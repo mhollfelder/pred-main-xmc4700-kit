@@ -128,7 +128,7 @@
  * do not want the Inventek module to block. Setting to zero means
  * no timeout, so one is the smallest value we can set it to.
  */
-#define securesocketsONE_MILLISECOND                    ( 1 )
+#define securesocketsONE_MILLISECOND                    ( 5000 )
 
 /**
  * @brief The credential set to use for TLS on the Inventek module.
