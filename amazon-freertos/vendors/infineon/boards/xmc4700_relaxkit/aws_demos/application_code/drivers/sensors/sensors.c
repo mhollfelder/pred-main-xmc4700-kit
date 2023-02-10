@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2021 Infineon Technologies AG.
  *
  * Licensed under the EVAL_XMC47_PREDMAIN_AA Evaluation Software License
@@ -141,21 +141,35 @@ static uint8_t ucErrorNumber;
 void vBoardOn( void )
 {
 	configPRINTF( ("SWITCHING BOARD ON...\r\n") );
+
+#if releaseHARDWARE_VERSION_MINOR > 2
+	DIGITAL_IO_SetOutputHigh( &BOARD_POWER );
+#else
 	DIGITAL_IO_SetOutputLow( &BOARD_POWER );
+#endif
 }
 
 
 void vBoardOff( void )
 {
 	configPRINTF( ("SWITCHING BOARD OFF...\r\n") );
+#if releaseHARDWARE_VERSION_MINOR > 2
+	DIGITAL_IO_SetOutputLow( &BOARD_POWER );
+#else
 	DIGITAL_IO_SetOutputHigh( &BOARD_POWER );
+#endif
 }
 
 
 void vSensorsOn( void )
 {
 	configPRINTF( ("SWITCHING SENSORS ON...\r\n") );
+
+#if releaseHARDWARE_VERSION_MINOR > 2
+	DIGITAL_IO_SetOutputHigh( &SENSORS_POWER );
+#else
 	DIGITAL_IO_SetOutputLow( &SENSORS_POWER );
+#endif
 
 	vTaskDelay( 1 );
 	vCsPowerSafety( 1 );
@@ -168,7 +182,12 @@ void vSensorsOff( void )
 	vTaskDelay( 1 );
 
 	configPRINTF( ("SWITCHING SENSORS OFF...\r\n") );
+
+#if releaseHARDWARE_VERSION_MINOR > 2
+	DIGITAL_IO_SetOutputLow( &SENSORS_POWER );
+#else
 	DIGITAL_IO_SetOutputHigh( &SENSORS_POWER );
+#endif
 }
 
 
@@ -208,7 +227,7 @@ void vSensorsInit( void )
                 /* An error has occurred, increase the number of attempts to initialize this sensor */
                 xSensor[DPS368_1].ucErrorCount++;
             }
-            else 
+            else
             {
                 /* Set flag that the sensor has been initialized */
                 xSensor[DPS368_1].bInited = true;
@@ -228,7 +247,7 @@ void vSensorsInit( void )
             {
                 xSensor[DPS368_2].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[DPS368_2].bInited = true;
                 xSensor[DPS368_2].ucErrorCount = NONE_ATTEMPT;
@@ -245,7 +264,7 @@ void vSensorsInit( void )
             {
                 xSensor[DPS368_3].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[DPS368_3].bInited = true;
                 xSensor[DPS368_3].ucErrorCount = NONE_ATTEMPT;
@@ -262,7 +281,7 @@ void vSensorsInit( void )
             {
                 xSensor[DPS368_4].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[DPS368_4].bInited = true;
                 xSensor[DPS368_4].ucErrorCount = NONE_ATTEMPT;
@@ -279,7 +298,7 @@ void vSensorsInit( void )
             {
                 xSensor[DPS368_5].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[DPS368_5].bInited = true;
                 xSensor[DPS368_5].ucErrorCount = NONE_ATTEMPT;
@@ -387,11 +406,11 @@ void vSensorsInit( void )
             {
                 xSensor[TLE4964_1].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[TLE4964_1].bInited = true;
                 xSensor[TLE4964_1].ucErrorCount = NONE_ATTEMPT;
-                --ucErrorNumber;  
+                --ucErrorNumber;
             }
         }
 #endif
@@ -404,7 +423,7 @@ void vSensorsInit( void )
             {
                 xSensor[TLE49613K_1].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[TLE49613K_1].bInited = true;
                 xSensor[TLE49613K_1].ucErrorCount = NONE_ATTEMPT;
@@ -455,7 +474,7 @@ void vSensorsInit( void )
             {
                 xSensor[TLI4966G_1].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[TLI4966G_1].bInited = true;
                 xSensor[TLI4966G_1].ucErrorCount = NONE_ATTEMPT;
@@ -493,7 +512,7 @@ void vSensorsInit( void )
             {
                 xSensor[TLI493D_1].ucErrorCount++;
             }
-            else 
+            else
             {
                 xSensor[TLI493D_1].bInited = true;
                 xSensor[TLI493D_1].ucErrorCount = NONE_ATTEMPT;
@@ -518,7 +537,7 @@ void vSensorsInit( void )
             		xSensor[i].ucErrorCount = NONE_ATTEMPT;
             		--ucErrorNumber;
                 }
-            } 
+            }
         }
 
     } /* while */
