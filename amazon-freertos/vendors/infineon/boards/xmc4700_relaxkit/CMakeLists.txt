@@ -106,7 +106,7 @@ set( compiler_debug_options "-g" "-gdwarf-2")
 set( compiler_warnings "-Wall" )
 
 #Set compiler optimization level
-set( compiler_optimization_options "-O2" "-fomit-frame-pointer" "-ffunction-sections" "-fdata-sections" "-ffreestanding" "-fno-builtin" "-fno-common")
+set( compiler_optimization_options "-O0" "-fomit-frame-pointer" "-ffunction-sections" "-fdata-sections" "-ffreestanding" "-fno-builtin" "-fno-common")
 
 #Set ARM GCC options
 set( compiler_arm_options "-mfloat-abi=softfp" "-mcpu=cortex-m4" "-mfpu=fpv4-sp-d16" "-mthumb")
@@ -165,6 +165,7 @@ set( linker_flags
      "--gc-sections"
      "-specs=nano.specs"
      "-specs=nosys.specs"
+     "-u_printf_float"
      "-Wl,-Map,aws_demos.map"
      ${compiler_arm_options}
      ${compiler_debug_options}
