@@ -833,29 +833,29 @@
 			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/sensors/TLx493D/tlx493d_interface.h</locationURI>
 		</link>
 		<link>
-			<name>application_code/drivers/wireless/inventek/ism43340_wifi.c</name>
+			<name>application_code/drivers/wireless/inventek/ISM43x_wifi.c</name>
 			<type>1</type>
-			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ism43340_wifi.c</locationURI>
+			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ISM43x_wifi.c</locationURI>
 		</link>
 		<link>
-			<name>application_code/drivers/wireless/inventek/ism43340_wifi.h</name>
+			<name>application_code/drivers/wireless/inventek/ISM43x_wifi.h</name>
 			<type>1</type>
-			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ism43340_wifi.h</locationURI>
+			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ISM43x_wifi.h</locationURI>
 		</link>
 		<link>
-			<name>application_code/drivers/wireless/inventek/ism43340_wifi_conf.h</name>
+			<name>application_code/drivers/wireless/inventek/ISM43x_wifi_conf.h</name>
 			<type>1</type>
-			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ism43340_wifi_conf.h</locationURI>
+			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ISM43x_wifi_conf.h</locationURI>
 		</link>
 		<link>
-			<name>application_code/drivers/wireless/inventek/ism43340_wifi_io.c</name>
+			<name>application_code/drivers/wireless/inventek/ISM43x_wifi_io.c</name>
 			<type>1</type>
-			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ism43340_wifi_io.c</locationURI>
+			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ISM43x_wifi_io.c</locationURI>
 		</link>
 		<link>
-			<name>application_code/drivers/wireless/inventek/ism43340_wifi_io.h</name>
+			<name>application_code/drivers/wireless/inventek/ISM43x_wifi_io.h</name>
 			<type>1</type>
-			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ism43340_wifi_io.h</locationURI>
+			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/drivers/wireless/inventek/ISM43x_wifi_io.h</locationURI>
 		</link>
 		<link>
 			<name>application_code/drivers/wireless/modem/aws_nbiot.c</name>
