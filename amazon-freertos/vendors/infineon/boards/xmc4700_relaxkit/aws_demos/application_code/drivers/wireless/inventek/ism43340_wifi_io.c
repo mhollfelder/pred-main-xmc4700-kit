@@ -37,8 +37,6 @@
 
 #include "DAVE.h"
 
-#define ISM43340_FW_6_2_1_X_DEBUG   0
-
 SemaphoreHandle_t xEsWifiMutex;
 
 /* Data to send */
@@ -252,7 +250,6 @@ int16_t SPI_WIFI_sReceiveData(uint8_t *pData, uint16_t usReceiveLength, uint32_t
     return sLength;
 }
 
-
 int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint32_t ulTimeout )
 {
     if( prvWaitCmdDataRdyHigh( 10000 ) < 0)
@@ -264,7 +261,7 @@ int16_t SPI_WIFI_sTransmitData( uint8_t *pData,  uint16_t usTransmitLength, uint
     {
         memcpy(pucBufTx, pData, usTransmitLength);
 
-#if( ISM43340_FW_6_2_1_X_DEBUG )
+#if releaseHARDWARE_VERSION_MINOR > 2
 
         /* Prepending by '\n' according to "ISM43340_4343_SPI_Errata_C6.2.1.X" */
         for( int16_t i = usTransmitLength - 1; i >= 0; i-- )
