@@ -47,6 +47,10 @@ FROM TABLE(
     RANDOM_CUT_FOREST(
         CURSOR(
             SELECT STREAM * FROM "METRICS_STREAM"
-        )
+        ),
+        30,
+        256,
+        500000,
+        1
     )
 );
