@@ -52,6 +52,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+/* Versioning of the hardware and firmware */
+#include "releases.h"
+
 /* Demo headers includes */
 #include "aws_demo.h"
 
@@ -117,13 +120,6 @@
 
 /* The name of the devices for xApplicationDNSQueryHook */
 #define mainDEVICE_NICK_NAME                "XMC4700_HVAC"
-
-/* Firmware and hardware release version */
-#define releaseFIRMWARE_VERSION				"1.2.1"
-
-#define	releaseHARDWARE_VERSION_MAJOR		1 /* The major version, e.g. in 1.2.3 it is 1 */
-#define	releaseHARDWARE_VERSION_MINOR		3 /* The minor version, e.g. in 1.2.3 it is 2 */
-#define	releaseHARDWARE_VERSION_PATCH		0 /* The patch version, e.g. in 1.2.3 it is 3 */
 
 /**
  * @brief Application task startup hook for applications using WiFi. If you are not

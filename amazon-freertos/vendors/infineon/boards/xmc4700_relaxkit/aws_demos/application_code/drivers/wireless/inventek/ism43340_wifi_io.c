@@ -37,6 +37,9 @@
 
 #include "DAVE.h"
 
+/* Versioning of the hardware and firmware */
+#include "releases.h"
+
 SemaphoreHandle_t xEsWifiMutex;
 
 /* Data to send */

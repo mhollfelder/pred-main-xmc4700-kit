@@ -37,6 +37,8 @@
 #include "spi_mux.h"
 #include "LTC4332/ltc4332.h"
 
+/* Versioning of the hardware and firmware */
+#include "releases.h"
 
 /* Package for MQTT */
 static InfineonSensorsMessage_t xSensorsMessage;

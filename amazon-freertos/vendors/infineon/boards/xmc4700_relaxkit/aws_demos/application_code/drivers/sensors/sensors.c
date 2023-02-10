@@ -37,6 +37,9 @@
 #include "statistic.h"
 #include "aws_nbiot.h"
 
+/* Versioning of the hardware and firmware */
+#include "releases.h"
+
 /* Parameter HEADERS for printing to log */
 static const char * pcFeatures[PARAMETERS_NUMBER] = {
 
