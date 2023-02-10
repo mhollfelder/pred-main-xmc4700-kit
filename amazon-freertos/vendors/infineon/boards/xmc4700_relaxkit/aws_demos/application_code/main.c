@@ -92,9 +92,9 @@
 #include "spi_mux.h"
 
 /*-----------------------------------------------------------
- * Application Mode selection define
+ * Application Mode and Board Version selection define
  */
-#define 	TEST_MODE 		false
+#define 	TEST_MODE 			false
 /*-----------------------------------------------------------*/
 
 /* Test headers includes */
@@ -118,8 +118,12 @@
 /* The name of the devices for xApplicationDNSQueryHook */
 #define mainDEVICE_NICK_NAME                "XMC4700_HVAC"
 
-/* Firmware release version */
-#define releaseFIRMWARE_VERSION				"1.2.0"
+/* Firmware and hardware release version */
+#define releaseFIRMWARE_VERSION				"1.2.1"
+
+#define	releaseHARDWARE_VERSION_MAJOR		1 /* The major version, e.g. in 1.2.3 it is 1 */
+#define	releaseHARDWARE_VERSION_MINOR		3 /* The minor version, e.g. in 1.2.3 it is 2 */
+#define	releaseHARDWARE_VERSION_PATCH		0 /* The patch version, e.g. in 1.2.3 it is 3 */
 
 /**
  * @brief Application task startup hook for applications using WiFi. If you are not
@@ -168,7 +172,11 @@ int main( void )
     /* Clear terminal screen */
     configPRINTF( ("\e[1;1H\e[2J") );
     configPRINTF( ("--------------------------------------------------\r\n") );
-    configPRINTF( ("FW.VER. %s\r\n", releaseFIRMWARE_VERSION) );
+    configPRINTF( ("Firmware Version: %s\r\n", releaseFIRMWARE_VERSION) );
+    configPRINTF( ("--------------------------------------------------\r\n") );
+
+    configPRINTF( ("--------------------------------------------------\r\n") );
+    configPRINTF( ("Hardware Version: %u.%u.%u\r\n", releaseHARDWARE_VERSION_MAJOR, releaseHARDWARE_VERSION_MINOR, releaseHARDWARE_VERSION_PATCH) );
     configPRINTF( ("--------------------------------------------------\r\n") );
 
     /* Initialize all hardware interfaces and GPIOs */
