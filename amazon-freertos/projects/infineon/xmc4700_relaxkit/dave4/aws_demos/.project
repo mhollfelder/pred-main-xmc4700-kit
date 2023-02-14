@@ -53,6 +53,11 @@
 			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/mqtt_task.h</locationURI>
 		</link>
 		<link>
+			<name>application_code/releases.h</name>
+			<type>1</type>
+			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/releases.h</locationURI>
+		</link>
+		<link>
 			<name>application_code/sensors_task.c</name>
 			<type>1</type>
 			<locationURI>AFR_HOME/vendors/infineon/boards/xmc4700_relaxkit/aws_demos/application_code/sensors_task.c</locationURI>
