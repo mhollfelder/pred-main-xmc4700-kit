@@ -92,7 +92,7 @@ int8_t SPI_WIFI_cResetModule( void )
 
     configPRINTF( ( "Resetting WIFI Module.. \r\n" ) );
     prvWifiResetModule();
-    vTaskDelay( pdMS_TO_TICKS( 5 ) );
+    vTaskDelay( pdMS_TO_TICKS( 100 ) );
 
     configPRINTF( ( "WIFI Module reset done. \r\n" ) );
     configPRINTF( ( "Waiting for WIFI Module is ready.. \r\n" ) );
@@ -326,9 +326,9 @@ uint32_t prvWifiIsCmdDataRdy( void )
 void prvWifiResetModule( void )
 {
     DIGITAL_IO_SetOutputLow( &ISM_RST );
-    vDelayMs( 20 );
+    vDelayMs( 100 );
     DIGITAL_IO_SetOutputHigh( &ISM_RST );
-    vDelayMs( 50 );
+    vDelayMs( 100 );
 }
 
 
