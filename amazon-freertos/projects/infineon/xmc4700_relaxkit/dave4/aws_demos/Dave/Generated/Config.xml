@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<Project MotherSystem_Version="" Name="aws_demos" Path="C:\Work\HVACR\amazon-freertos\projects\infineon\xmc4700_relaxkit\dave4\aws_demos">
+<Project MotherSystem_Version="" Name="aws_demos" Path="C:\Workspaces\fix\pred-main-fix\amazon-freertos\projects\infineon\xmc4700_relaxkit\dave4\aws_demos">
     <COMPILER>
         <Name>ARM_GCC_HOME</Name>
         <Version/>

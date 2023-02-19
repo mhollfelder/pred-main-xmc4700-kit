@@ -55,7 +55,7 @@
 /**
 * @brief Contents entered via GUI
 */
-const PIN_INTERRUPT_t ISM43340_RDY_PIN_INTERRUPT =
+const PIN_INTERRUPT_t ISM43x_RDY_PIN_INTERRUPT =
 {
   .eru = XMC_ERU1,  /* ERU module 1 Mapped */
   .port = XMC_GPIO_PORT1,  /* PORT 1 Mapped */

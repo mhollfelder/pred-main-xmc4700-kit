@@ -61,6 +61,6 @@
 #define PIN_INTERRUPT_PATCH_VERSION (2U)
 
 /**< Mapped IRQ Node Number */
-#define ISM43340_RDY_IRQHandler IRQ_Hdlr_5  
+#define ISM43x_RDY_IRQHandler IRQ_Hdlr_5  
 		
 #endif /* End of PIN_INTERRUPT_CONF_H */

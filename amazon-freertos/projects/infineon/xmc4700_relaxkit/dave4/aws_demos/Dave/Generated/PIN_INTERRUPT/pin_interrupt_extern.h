@@ -61,7 +61,7 @@
  * EXTERN DECLARATIONS
 ***********************************************************************************************************************/
 
-/* Extern declaration for ISM43340_RDY_PIN_INTERRUPT */
-extern const PIN_INTERRUPT_t ISM43340_RDY_PIN_INTERRUPT;
+/* Extern declaration for ISM43x_RDY_PIN_INTERRUPT */
+extern const PIN_INTERRUPT_t ISM43x_RDY_PIN_INTERRUPT;
 
 #endif /* End of PIN_INTERRUPT_EXTERN_H */

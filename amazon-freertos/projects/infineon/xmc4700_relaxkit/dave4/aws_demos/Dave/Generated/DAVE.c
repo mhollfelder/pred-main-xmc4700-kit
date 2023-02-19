@@ -79,8 +79,8 @@ __WEAK DAVE_STATUS_t DAVE_Init(void)
    } 
   if (init_status == DAVE_STATUS_SUCCESS)
   {
-	 /**  Initialization of PIN_INTERRUPT APP instance ISM43340_RDY_PIN_INTERRUPT */
-	 init_status = (DAVE_STATUS_t)PIN_INTERRUPT_Init(&ISM43340_RDY_PIN_INTERRUPT); 
+	 /**  Initialization of PIN_INTERRUPT APP instance ISM43x_RDY_PIN_INTERRUPT */
+	 init_status = (DAVE_STATUS_t)PIN_INTERRUPT_Init(&ISM43x_RDY_PIN_INTERRUPT); 
    } 
   if (init_status == DAVE_STATUS_SUCCESS)
   {
