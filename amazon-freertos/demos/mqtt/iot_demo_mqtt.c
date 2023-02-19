@@ -98,7 +98,7 @@
 /**
  * @brief The timeout for MQTT operations in this demo.
  */
-#define MQTT_TIMEOUT_MS                          ( 5000 )
+#define MQTT_TIMEOUT_MS                          ( 7500 )
 
 /**
  * @brief The Last Will and Testament topic name in this demo.

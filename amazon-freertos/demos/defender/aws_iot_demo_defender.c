@@ -53,7 +53,7 @@
 /**
  * @brief The timeout for Defender and MQTT operations in this demo.
  */
-#define TIMEOUT_MS                   ( ( uint32_t ) 5000 )
+#define TIMEOUT_MS                   ( ( uint32_t ) 6000 )
 
 /**
  * @brief Defender metrics publish interval, 5 minutes (300 seconds) is minumum.

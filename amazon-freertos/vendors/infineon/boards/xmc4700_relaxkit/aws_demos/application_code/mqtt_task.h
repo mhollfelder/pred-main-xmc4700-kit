@@ -42,7 +42,7 @@
 /** Timeout for the TLS negotiation */
 #define mqtttaskMQTT_ECHO_TLS_NEGOTIATION_TIMEOUT       pdMS_TO_TICKS( 15000 )
 /** Timeout for MQTT operations */
-#define mqtttaskMQTT_TIMEOUT                            pdMS_TO_TICKS( 3000 )
+#define mqtttaskMQTT_TIMEOUT                            pdMS_TO_TICKS( 7500 )
 /** The number of items in the receive queue */
 #define mqtttaskRECEIVE_QUEUE_LENGTH                    ( 2 )
 /** Size of the buffer in which messages to the broker will be generated */
