@@ -636,7 +636,14 @@ ISM43x_WIFI_Status_t  ISM43x_WIFI_Init( ISM43x_WIFIObject_t *pxObj )
             configPRINTF( ("    API Revision:    %s\r\n",pxObj->API_Rev) );
             configPRINTF( ("    Stack Revision:  %s\r\n",pxObj->Stack_Rev) );
             configPRINTF( ("    RTOS Revision:   %s\r\n",pxObj->RTOS_Rev) );
-            configPRINTF( ("    CPU Clock:       %.1f MHz\r\n\r\n",(double)pxObj->CPU_Clock/1000000) );
+            configPRINTF( ("    CPU Clock:       %.1f MHz\r\n",(double)pxObj->CPU_Clock/1000000) );
+        }
+
+        uint8_t pucMac[6];
+        xRet = ISM43x_WIFI_GetMACAddress(pxObj, pucMac);
+
+        if(xRet == ISM43x_WIFI_STATUS_OK){
+        	configPRINTF( ("    MAC Address:     %02x:%02x:%02x:%02x:%02x:%02x\r\n\r\n", (unsigned char) pucMac[0], (unsigned char) pucMac[1], (unsigned char) pucMac[2], (unsigned char) pucMac[3], (unsigned char) pucMac[4], (unsigned char) pucMac[5] ) );
         }
 
         UNLOCK_WIFI();
