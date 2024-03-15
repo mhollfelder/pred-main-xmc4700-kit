@@ -40,9 +40,9 @@
 #define MQTT_OUTPUT_FORMAT_JSON                         1
 
 /** Timeout for the TLS negotiation */
-#define mqtttaskMQTT_ECHO_TLS_NEGOTIATION_TIMEOUT       pdMS_TO_TICKS( 15000 )
+#define mqtttaskMQTT_ECHO_TLS_NEGOTIATION_TIMEOUT       pdMS_TO_TICKS( 30000 )
 /** Timeout for MQTT operations */
-#define mqtttaskMQTT_TIMEOUT                            pdMS_TO_TICKS( 7500 )
+#define mqtttaskMQTT_TIMEOUT                            pdMS_TO_TICKS( 15000 )
 /** The number of items in the receive queue */
 #define mqtttaskRECEIVE_QUEUE_LENGTH                    ( 2 )
 /** Size of the buffer in which messages to the broker will be generated */
