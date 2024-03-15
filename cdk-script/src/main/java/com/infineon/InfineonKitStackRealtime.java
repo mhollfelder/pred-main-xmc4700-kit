@@ -130,7 +130,7 @@ public class InfineonKitStackRealtime extends Stack {
         envVariables.put("AWS_DOMAIN", "https://" + endpoint);
 
         Function func = Function.Builder.create(this, "AnomalyToEsNJ")
-                .runtime(Runtime.NODEJS_12_X)
+                .runtime(Runtime.NODEJS_14_X)
                 .role(getRoleForLambdaAnalytics())
                 .environment(envVariables)
                 .timeout(Duration.minutes(1))
